@@ -2,10 +2,16 @@
 import csv
 from datetime import datetime
 from typing import List, Dict, Tuple
+# Importações atualizadas
 from .data_structs import Match, Team
 from .bst_library import BST_A
 from .avl import AVLPointsTree_A
-from .sorting import calculate_team_scores, merge_sort, bubble_sort, generate_top_rankings
+from .sorting import (
+    calculate_team_scores, 
+    calculate_total_goals, 
+    merge_sort, 
+    generate_top_rankings
+)
 from .search import linear_search, binary_search
 
 # =====================================================================
@@ -65,20 +71,20 @@ def carregar_partidas_csv(caminho_csv: str) -> Tuple[List[Match], int]:
 # Criação das BSTs (Etapa 3)
 # =====================================================================
 
-def criar_bsts(lista_times: List[Team]) -> Tuple[BST_A, BST_A]:
-    """Cria e popula as duas BSTs (por nome e por score)."""
+def criar_bsts(lista_times_pontos: List[Team], lista_times_gols: List[Team]) -> Tuple[BST_A, BST_A]:
+    """Cria e popula as duas BSTs (por nome e por gols totais)."""
     bst_nome = BST_A()
-    bst_score = BST_A() # O requisito usa 'gols', mas agora estamos usando 'score' (pontos)
+    bst_gols = BST_A()
     
-    # Inserir os times nas duas árvores
-    for time in lista_times:
-        # BST 1 → Chave = Nome (ordenada alfabeticamente)
+    # 1. BST por Nome (Chave = Nome | Valor = Team/Pontos)
+    for time in lista_times_pontos:
         bst_nome.insert(time.name, time)
         
-        # BST 2 → Chave = Score (ordenada por pontos)
-        bst_score.insert(time.score, time)
+    # 2. BST por Gols Totais (Chave = Gols | Valor = Team/Gols)
+    for time in lista_times_gols:
+        bst_gols.insert(time.score, time)
 
-    return bst_nome, bst_score
+    return bst_nome, bst_gols
 
 # =====================================================================
 # Criação da AVL (Etapa 5)
@@ -88,7 +94,6 @@ def criar_avl_por_pontos(lista_times: List[Team]) -> AVLPointsTree_A:
     """Cria e popula a AVL com os times ordenados por pontos."""
     avl = AVLPointsTree_A()
     
-    # A lista já está ordenada da Etapa 4, o que testará bem o balanceamento da AVL
     for time in lista_times:
         avl.insert(time)
         
@@ -114,7 +119,7 @@ def gerar_csv_resumo(matches: List[Match], caminho_saida: str):
 
 if __name__ == "__main__":
     
-    # Paths (assumindo que estamos na raiz do projeto 'Trabalho')
+    # Paths 
     INPUT_CSV = "data/results.csv"
     OUTPUT_CSV = "output/matches_summary.csv"
 
@@ -125,68 +130,93 @@ if __name__ == "__main__":
     print(f"Total de linhas filtradas (dados faltantes/inválidos): {linhas_filtradas}")
     print("-" * 40)
 
-    # Cálculo da pontuação dos times (Base para Etapas 3, 4, 5)
-    lista_times = calculate_team_scores(matches)
+    # Cálculo da pontuação e gols
+    lista_times_pontos = calculate_team_scores(matches)
+    lista_times_gols = calculate_total_goals(matches)
 
     # Etapa 3: Criar BSTs
     print("--- Etapa 3: Implementando BSTs ---")
-    bst_nome, bst_score = criar_bsts(lista_times)
+    bst_nome, bst_gols = criar_bsts(lista_times_pontos, lista_times_gols) 
     
     print("\n[BST por Nome (Ordem Alfabética)]")
-    # Acessamos o valor (objeto Team) do nó
-    for _, time_obj in bst_nome.inorder():
-        print(f"  {time_obj.name}: {time_obj.score} pontos")
-
-    print("\n[BST por Score (Ordem de Pontos)]")
-    for score, time_obj in bst_score.inorder():
-        print(f"  {time_obj.name}: {time_obj.score} pontos")
+    # ... (Prints da BST Nome)
+    print("\n[BST por Gols Totais (Ordem de Gols)]")
+    # ... (Prints da BST Gols)
     print("-" * 40)
     
     # Etapa 4: Ordenação e Ranking
     print("--- Etapa 4: Ordenação e Rankings ---")
-    # Criamos uma cópia da lista para ordenar
-    times_ordenacao = lista_times[:] 
+    times_ordenacao = lista_times_pontos[:] 
     
-    # Usando o Merge Sort (O(n log n)) para ordenar a lista
+    # Usando o Merge Sort (O(n log n) e estável) para ordenar a lista
     merge_sort(times_ordenacao) 
     
     top_more, top_less = generate_top_rankings(times_ordenacao, top_n=10)
     
     print("\n[Top 10 Seleções com MAIS pontos (Merge Sort)]")
-    for i, team in enumerate(top_more):
-        print(f"{i+1}. {team.name}: {team.score} pts")
-
+    # ... (Prints do Ranking)
     print("\n[Top 10 Seleções com MENOS pontos (Merge Sort)]")
-    for i, team in enumerate(top_less):
-        print(f"{i+1}. {team.name}: {team.score} pts")
+    # ... (Prints do Ranking)
     print("-" * 40)
 
     # Etapa 5: AVL por Pontos
     print("--- Etapa 5: AVL por Pontos ---")
-    # Usamos a lista já ordenada pela Etapa 4 (times_ordenacao)
     avl_points = criar_avl_por_pontos(times_ordenacao)
     print(f"Altura da Árvore AVL: {avl_points.height()}")
     
     print("\n[AVL In-Order (Ordenado por Pontos)]")
-    for score, time_obj in avl_points.inorder():
-        print(f"  {time_obj.name}: {score} pontos")
+    # ... (Prints da AVL)
     print("-" * 40)
 
     # Etapa 6: Geração do CSV
     print("--- Etapa 6: Gerando CSV de Resumo ---")
-    # Certifique-se de que a pasta 'output' existe
     import os
     os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
     gerar_csv_resumo(matches, OUTPUT_CSV)
     print(f"Arquivo de resumo gerado em: {OUTPUT_CSV}")
     print("-" * 40)
 
-    # Exemplo de Busca (Para demonstração de complexidade O(log n))
-    team_to_find = "Brazil"
-    # Para usar a busca binária, a lista precisa estar ordenada pela chave de busca.
-    # Usamos o resultado do Merge Sort (times_ordenacao)
-    found_team = bst_nome.search(team_to_find)
-    if found_team:
-        print(f"Busca: {found_team.name} encontrado com {found_team.score} pontos.")
+    # =====================================================================
+    # DEMONSTRAÇÃO DOS ALGORITMOS DE BUSCA (REQUISITO IMPLÍCITO)
+    # =====================================================================
+    
+    team_to_find_name = "Brazil" # Para busca por nome
+    
+    print("--- Demonstração de Busca ---")
+
+    # 1. Busca na BST (O(log n) no caso médio)
+    # A melhor escolha para buscar um time por NOME em uma estrutura dinâmica
+    found_team_bst = bst_nome.search(team_to_find_name)
+    if found_team_bst:
+        print(f"1. Busca BST por Nome (O(log n)): Time '{found_team_bst.name}' encontrado com {found_team_bst.score} pontos.")
     else:
-        print(f"Busca: {team_to_find} não encontrado.")
+        print(f"1. Busca BST por Nome (O(log n)): Time '{team_to_find_name}' não encontrado.")
+
+
+    # 2. Busca Linear (O(n))
+    # Aplicada na lista de times *não ordenada* (Etapa 2), buscando por nome.
+    # Criamos uma lista de nomes para facilitar a busca linear simples.
+    names_list = [team.name for team in lista_times_pontos]
+    index_linear = linear_search(names_list, team_to_find_name)
+    if index_linear != -1:
+        print(f"2. Busca Linear por Nome (O(n)): Time '{names_list[index_linear]}' encontrado na posição {index_linear}.")
+    else:
+        print(f"2. Busca Linear por Nome (O(n)): Time '{team_to_find_name}' não encontrado.")
+
+
+    # 3. Busca Binária (O(log n))
+    # Aplicada na lista de times *ordenada por score* (Etapa 4), buscando o score.
+    # Buscamos um score conhecido, por exemplo, o score do primeiro time ordenado.
+    target_score = times_ordenacao[0].score if times_ordenacao else -1 
+    
+    # Criamos uma lista de scores ordenados para a Busca Binária
+    scores_list = [team.score for team in times_ordenacao]
+    
+    index_binary = binary_search(scores_list, target_score)
+    
+    if index_binary != -1:
+        print(f"3. Busca Binária por Score (O(log n)): Score {target_score} encontrado na posição {index_binary}. ({times_ordenacao[index_binary].name}).")
+    else:
+        print(f"3. Busca Binária por Score (O(log n)): Score {target_score} não encontrado.")
+    
+    print("-" * 40)

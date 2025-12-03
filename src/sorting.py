@@ -29,15 +29,35 @@ def calculate_team_scores(matches: List[Match]) -> List[Team]:
         
     return lista_times
 
+def calculate_total_goals(matches: List[Match]) -> List[Team]:
+    """
+    Calcula o total de GOLS MARCADOS (acumulados) por todos os times.
+    Esta lista é usada para a BST 2 da Etapa 3.
+    Retorna uma lista de objetos Team com seus GOLS TOTAIS.
+    """
+    team_goals: Dict[str, int] = {}
+    
+    # Acumula os gols
+    for match in matches:
+        # Gols marcados por quem jogou em casa
+        team_goals[match.home_team_name] = team_goals.get(match.home_team_name, 0) + match.home_score
+        
+        # Gols marcados por quem jogou fora
+        team_goals[match.away_team_name] = team_goals.get(match.away_team_name, 0) + match.away_score
+
+    # Cria a lista final de objetos Team
+    lista_times_gols = []
+    for name, goals in team_goals.items():
+        # Usamos o atributo 'score' da classe Team para armazenar os gols
+        lista_times_gols.append(Team(name, goals))
+        
+    return lista_times_gols
+
 
 def generate_top_rankings(teams: List[Team], top_n: int = 10) -> Tuple[List[Team], List[Team]]:
     """
     Gera o ranking Top N com mais pontos e o Top N com menos pontos.
     """
-    # Ordena a lista de times (usando o Merge Sort ou a função sorted() do Python 
-    # que é O(n log n) para garantir estabilidade e performance).
-    # A classe Team tem __lt__ definido para ordenar pelo score.
-    
     # Ordenação decrescente (mais pontos)
     sorted_teams_desc = sorted(teams, key=lambda t: t.score, reverse=True)
     
