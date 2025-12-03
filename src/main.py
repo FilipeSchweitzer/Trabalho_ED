@@ -4,7 +4,7 @@ import csv
 import pandas as pd
 from data_structs import Match, Team
 from bst_library import BST_A
-from sorting import calculate_team_scores, generate_top_rankings
+from src.sorting import calculate_team_scores, generate_top_rankings
 
 # Função para checar se o dado está faltando
 def faltando(valor: str):
