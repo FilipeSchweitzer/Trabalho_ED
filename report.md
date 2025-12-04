@@ -85,8 +85,8 @@ O **Merge Sort ($O(n \log n)$)** foi utilizado para ordenar a lista de `Team` po
 
 A AVL foi populada com a lista ordenada de pontos para demonstrar o auto-balanceamento.
 
-* **Altura da Árvore AVL:** [Inserir Altura da AVL do print]
-    * [Captura de tela da Etapa 5 - Altura da AVL]
+* **Altura da Árvore AVL:** [9]
+    * ![alt text](image.png)
 
 #### 3.5. Etapa 6: Geração do CSV de Resumo
 
@@ -107,6 +107,6 @@ O resumo das partidas foi gravado em `output/matches_summary.csv` utilizando o f
 | :--- | :--- | :--- |
 | **[Nome do Aluno 1]** | [Detalhar contribuição (Ex: Implementação das classes Match/Team e BST).] | |
 | **[Nome do Aluno 2]** | [Detalhar contribuição (Ex: Implementação da AVL e Lógica de Pontuação).] | |
-| **[Nome do Aluno 3]** | [Detalhar contribuição (Ex: Implementação de Merge Sort/Bubble Sort e Orquestração main.py).] | |
+| **Filipe Schweitzer** | Etapa 5 implementar AVL e Etapa 6 | |
 | **[Nome do Aluno 4]** | [Detalhar contribuição (Ex: Implementação dos Algoritmos de Busca e Geração de CSV).] | |
 | **[Nome do Aluno 5]** | [Detalhar contribuição (Ex: Elaboração e revisão final do Relatório e Análise Assintótica).] | |
