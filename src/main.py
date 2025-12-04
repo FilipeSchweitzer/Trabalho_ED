@@ -138,10 +138,19 @@ if __name__ == "__main__":
     print("--- Etapa 3: Implementando BSTs ---")
     bst_nome, bst_gols = criar_bsts(lista_times_pontos, lista_times_gols) 
     
-    print("\n[BST por Nome (Ordem Alfabética)]")
-    # ... (Prints da BST Nome)
-    print("\n[BST por Gols Totais (Ordem de Gols)]")
-    # ... (Prints da BST Gols)
+    # PRINTS ADICIONADOS AQUI
+    print("\n[BST por Nome (Ordem Alfabética - In-order)]")
+    # A BST por nome usa o nome como chave, o in-order retorna em ordem alfabética.
+    for key, team in bst_nome.inorder()[:10]: # Imprime os primeiros 10
+        print(f"  - {team.name} (Pontos: {team.score})")
+
+    print("\n[BST por Gols Totais (Ordem de Gols - In-order)]")
+    # A BST por gols usa o score de gols como chave, o in-order retorna em ordem crescente de gols.
+    # Note que a chave (key) é o score de gols (value.score).
+    for key, team in bst_gols.inorder()[:10]: # Imprime os primeiros 10 (menores scores de gols)
+        print(f"  - {team.name} (Gols: {key})")
+    # FIM DOS PRINTS DA ETAPA 3
+    
     print("-" * 40)
     
     # Etapa 4: Ordenação e Ranking
@@ -149,14 +158,20 @@ if __name__ == "__main__":
     times_ordenacao = lista_times_pontos[:] 
     
     # Usando o Merge Sort (O(n log n) e estável) para ordenar a lista
-    merge_sort(times_ordenacao) 
+    merge_sort(times_ordenacao) # Ordena em ordem crescente por score de pontos
     
     top_more, top_less = generate_top_rankings(times_ordenacao, top_n=10)
     
+    # PRINTS ADICIONADOS AQUI
     print("\n[Top 10 Seleções com MAIS pontos (Merge Sort)]")
-    # ... (Prints do Ranking)
+    for i, team in enumerate(top_more):
+        print(f"  {i+1}. {team.name}: {team.score} pontos")
+        
     print("\n[Top 10 Seleções com MENOS pontos (Merge Sort)]")
-    # ... (Prints do Ranking)
+    for i, team in enumerate(top_less):
+        print(f"  {i+1}. {team.name}: {team.score} pontos")
+    # FIM DOS PRINTS DA ETAPA 4
+    
     print("-" * 40)
 
     # Etapa 5: AVL por Pontos
@@ -164,8 +179,13 @@ if __name__ == "__main__":
     avl_points = criar_avl_por_pontos(times_ordenacao)
     print(f"Altura da Árvore AVL: {avl_points.height()}")
     
+    # PRINTS ADICIONADOS AQUI
     print("\n[AVL In-Order (Ordenado por Pontos)]")
-    # ... (Prints da AVL)
+    # O in-order retorna em ordem crescente de pontuação (score).
+    for key, team in avl_points.inorder()[:10]: # Imprime os primeiros 10 (menores scores)
+        print(f"  - {team.name} (Pontos: {key})")
+    # FIM DOS PRINTS DA ETAPA 5
+
     print("-" * 40)
 
     # Etapa 6: Geração do CSV
