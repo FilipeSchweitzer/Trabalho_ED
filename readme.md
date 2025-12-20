@@ -57,7 +57,7 @@ Este trabalho foi desenvolvido em grupo e cada membro contribuiu para as etapas 
 | Nome do Estudante | Linkedin | GitHub |
 | :--- | :--- | :--- |
 | **Filipe Schweitzer** | linkedin.com/in/filipe-schweitzer-03245049 | https://github.com/FilipeSchweitzer Assintótica. |
-| **[Nome do Aluno 2]** | Especialista em Algoritmos | Ordenação (Merge Sort, Bubble Sort) e Busca (Linear, Binária) (Etapa 4). |
-| **[Nome do Aluno 3]** | Arquiteto de Dados | Modelagem de Classes (`data_structs.py`), Leitura e Geração de CSV (Etapas 1, 2 e 6). |
-| **[Nome do Aluno 4]** | Testes e Documentação | Teste de todas as funções, elaboração do `report.md` (Etapa 7). |
-| **[Nome do Aluno 5]** | Gerente de Projeto | Integração de módulos, revisão de código e organização dos entregáveis. |
+| **[Nome do Aluno 2]** | linkedin | gitHub |
+| **[Nome do Aluno 3]** | linkedin | gitHub |
+| **[Nome do Aluno 4]** | linkedin | gitHub |
+| **[Nome do Aluno 5]** | linkedin | gitHub |
